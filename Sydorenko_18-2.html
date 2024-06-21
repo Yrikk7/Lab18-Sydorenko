@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Game</title>
+    <style>
+        div {
+            border: 4px solid black;
+            padding: 20px;
+            width: 1200px;
+            height: 900px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 700px;
+            height: 700px;
+            border: 5px solid black;
+        }
+
+        th,
+        td {
+            border: 5px double black;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <table>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+                <td>15</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>17</td>
+                <td>18</td>
+                <td>19</td>
+                <td>20</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>22</td>
+                <td>23</td>
+                <td>24</td>
+                <td>25</td>
+            </tr>
+        </table><br>
+        <button id="restartButton" onclick="start()">Почати з початку</button><br>
+        <h>Число наступне</h><br>
+        <h id="f1"></h><br>
+        <h>Время прошло</h><br>
+        <h id="timer">0:00</h><br>
+        <table style="height: 150px; width: 700px;">
+            <tr>
+                <td>Номер спроби</td>
+                <td>Час</td>
+            </tr>
+            <tr>
+                <td>Спроба 1</td>
+                <td class="h1">0</td>
+            </tr>
+            <tr>
+                <td>Спроба 2</td>
+                <td class="h1">0</td>
+            </tr>
+            <tr>
+                <td>Спроба 3</td>
+                <td class="h1">0</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        const NDgers = document.querySelectorAll('td');
+        let hil = 1;
+        let startTime, timerInterval;
+        let Blank = document.querySelectorAll('.h1');
+        let l = 0;
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function start() {
+            hil = 1;
+            document.getElementById("f1").textContent = hil;
+            document.getElementById('timer').textContent = '0:00';
+            startTimer();
+
+            for (let i = 0; i <= 24; i++) {
+                NDgers[i].textContent = "";
+                NDgers[i].style.color = "";
+                NDgers[i].style.fontSize = "";
+                NDgers[i].style.backgroundColor = "";
+            }
+
+            const numbers = [];
+            for (let i = 1; i <= 25; i++) {
+                numbers.push(i);
+            }
+            numbers.sort(() => Math.random() - 0.5); // Випадкове перемішування чисел            
+            for (let i = 0; i <= 24; i++) {
+                NDgers[i].textContent = numbers[i];
+                NDgers[i].style.color = getRandomColor();
+                NDgers[i].style.fontSize = (Math.floor(Math.random() * 20) + 12) + "px";
+            }
+            if (Blank[l].textContent !== "0" && Blank[l + 1].textContent !== "0" && Blank[l + 2].textContent !== "0") {
+                for (let i = 0; i <= 2; i++) {
+                    let parts = Blank[i].textContent.split(':');
+                    let minutes = parseInt(parts[0]);
+                    let seconds = parseInt(parts[1]);
+
+                    // Преобразовать в общее количество секунд
+                    Blank[i].textContent = minutes * 60 + seconds;
+                }
+                Blank = Blank.sort((a, b) => b - a);
+                for (let i = 0; i <= 2; i++) {
+                    Blank[i].textContent.style.backgroundColor = `rgb(${i}22, 122, 140)`
+                }
+            }
+        }
+
+        function play() {
+            for (let NDger of NDgers) {
+                NDger.addEventListener('click', () => {
+                    if (parseInt(NDger.textContent) != hil) {
+                        alert('Не вірна цифра');
+                        nil - 1;
+                    }
+                    hil++;
+                    NDger.style.color = "red";
+                    NDger.style.fontSize = "30px";
+                    NDger.style.backgroundColor = "yellow";
+                    if (hil == 21) {
+                        alert('Ви перемогли');
+                        stopTimer();
+                        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                        const minutes = Math.floor(elapsedTime / 60);
+                        const seconds = elapsedTime % 60;
+                        alert(`Час: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`);
+                        if (Blank[l].textContent == "0") {
+                            Blank[l].textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`
+                        }
+                        /*if (parseInt(Blank[i].textContent) > parseInt(Blank[i + 1].textContent)) {
+                            Blank[l].style.backgroundColor = "red";
+                            Blank[l + 1].style.backgroundColor = "blue"
+                        }*/
+                        l++
+                        start()
+                    }
+                    document.getElementById("f1").textContent = hil;
+                });
+            }
+        }
+        start()
+        play()                     
+    </script>
+</body>
+
+</html>
